@@ -42,6 +42,22 @@ void AddMovie(string file)
     // prompt for movie info
     Console.Write("Enter movie title: ");
     string movieTitle = Console.ReadLine();
+    // Prompt for year and verify valid input
+    int movieYear;
+    while (true)
+    {
+        Console.Write("Enter the year the movie was made: ");
+        if (int.TryParse(Console.ReadLine(), out movieYear) && movieYear >= 1900 && movieYear <= DateTime.Now.Year)
+        {            
+            break;            
+        }
+        else
+        {
+            logger.Error($"Invalid year entered. Please enter a valid year between 1900 and {DateTime.Now.Year}");
+        }
+    }
+    // concatenate title with year
+    string titleWithYear = $"{movieTitle} ({movieYear})";
     // create list to store genres
     List<string> genresList = new List<string>();
     // Prompt for genres until user is done
@@ -63,12 +79,13 @@ void AddMovie(string file)
 
     // concatenate all genres with "|"
     string movieGenres = string.Join("|", genresList);
+    
 
     //Check for duplicate
-    if (!IsDuplicateMovie(file, movieTitle))
+    if (!IsDuplicateMovie(file, titleWithYear))
     {
         // create movie object
-        var movie = new Movie { movieId = id, title = movieTitle, genres = movieGenres };
+        var movie = new Movie { movieId = id, title = titleWithYear, genres = movieGenres };
         // add movie to csv
         using (var sw = new StreamWriter(file, append: true))
         using (var csv = new CsvWriter(sw, CultureInfo.InvariantCulture))
@@ -84,10 +101,8 @@ void AddMovie(string file)
     else
     {
         // create logger message
-        logger.Error("Movie with same title already exists");
+        logger.Error("Movie with same title already exists.");
     }
-
-
 }
 static void DisplayMovies(string file)
 {
