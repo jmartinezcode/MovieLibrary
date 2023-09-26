@@ -77,8 +77,8 @@ void AddMovie(string file)
         }   
     }   
 
-    // concatenate all genres with "|"
-    string movieGenres = string.Join("|", genresList);
+    // check if genresList is empty & concatenate all genres with "|" 
+    string movieGenres = genresList.Count > 0 ? string.Join("|", genresList) : "(no genres listed)";
     
 
     //Check for duplicate
